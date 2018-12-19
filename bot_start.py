@@ -21,7 +21,7 @@ def som(bot, update):
     :param update:
     :return:
     """
-    bot.send_message(chat_id=update.message.chat_id, text="客官，请输入您想设定的抽烟时间,格式请参考 '>抽烟时间12:30'")
+    bot.send_message(chat_id=update.message.chat_id, text="客官，请输入您想设定的抽烟时间,格式请参考 '/抽烟时间 12:30'")
 
 
 def remove(bot, update):
@@ -35,6 +35,39 @@ def remove(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text="客官，所有定时任务均已经删除。")
 
 
+def som_time(bot, update):
+    """
+       所有消息的过滤
+       :param bot:
+       :param update:
+       :return:
+       """
+    message = update.message.text
+    new = message.replace("/抽烟时间", "")
+    new = new.strip()
+    if new.isdigit() and 0 <= int(new) < 23:
+        # 纯数字的结尾，就当
+        h = int(new)
+        add_scheduler(chat_id=update.message.chat_id, h=h, m=0)
+        bot.send_message(chat_id=update.message.chat_id, text='温馨提示!成功添加抽烟时间!')
+        bot.send_message(chat_id=update.message.chat_id,
+                         text='我将提醒各位客官老爷们 每个工作日的' + new + '点抽烟,请勿重复添加。如果需要删除提醒请输入 /remove')
+    elif ':' in new:
+        time = new.split(':')
+        if len(time) == 2 and 0 <= int(time[0]) < 23 and 0 <= int(time[1]) < 60:
+            add_scheduler(chat_id=update.message.chat_id, h=int(time[0]), m=int(time[1]))
+            bot.send_message(chat_id=update.message.chat_id, text='温馨提示!成功添加抽烟时间!')
+            bot.send_message(chat_id=update.message.chat_id,
+                             text='我将提醒各位客官老爷们 每个工作日的' + new + '分抽烟,请勿重复添加。如果需要删除提醒请输入 /remove')
+    elif '：' in new:
+        time = new.split('：')
+        if len(time) == 2 and 0 <= int(time[0]) < 23 and 0 <= int(time[1]) < 60:
+            add_scheduler(chat_id=update.message.chat_id, h=int(time[0]), m=int(time[1]))
+            bot.send_message(chat_id=update.message.chat_id, text='温馨提示!成功添加抽烟时间!')
+            bot.send_message(chat_id=update.message.chat_id,
+                             text='我将提醒各位客官老爷们 每个工作日的' + new + '分抽烟,请勿重复添加。如果需要删除提醒请输入 /remove')
+
+
 def echo(bot, update):
     """
     所有消息的过滤
@@ -42,31 +75,7 @@ def echo(bot, update):
     :param update:
     :return:
     """
-    message = update.message.text
-    if message.startswith('>抽烟时间'):
-        new = message.replace(">抽烟时间", "")
-        new = new.strip()
-        if new.isdigit() and 0 <= int(new) < 23:
-            # 纯数字的结尾，就当
-            h = int(new)
-            add_scheduler(chat_id=update.message.chat_id, h=h, m=0)
-            bot.send_message(chat_id=update.message.chat_id, text='温馨提示!成功添加抽烟时间!')
-            bot.send_message(chat_id=update.message.chat_id,
-                             text='我将提醒各位客官老爷们 每个工作日的' + new + '点抽烟,请勿重复添加。如果需要删除提醒请输入 /remove')
-        elif ':' in new:
-            time = new.split(':')
-            if len(time) == 2 and 0 <= int(time[0]) < 23 and 0 <= int(time[1]) < 60:
-                add_scheduler(chat_id=update.message.chat_id, h=int(time[0]), m=int(time[1]))
-                bot.send_message(chat_id=update.message.chat_id, text='温馨提示!成功添加抽烟时间!')
-                bot.send_message(chat_id=update.message.chat_id,
-                                 text='我将提醒各位客官老爷们 每个工作日的' + new + '分抽烟,请勿重复添加。如果需要删除提醒请输入 /remove')
-        elif '：' in new:
-            time = new.split('：')
-            if len(time) == 2 and 0 <= int(time[0]) < 23 and 0 <= int(time[1]) < 60:
-                add_scheduler(chat_id=update.message.chat_id, h=int(time[0]), m=int(time[1]))
-                bot.send_message(chat_id=update.message.chat_id, text='温馨提示!成功添加抽烟时间!')
-                bot.send_message(chat_id=update.message.chat_id,
-                                 text='我将提醒各位客官老爷们 每个工作日的' + new + '分抽烟,请勿重复添加。如果需要删除提醒请输入 /remove')
+    bot.send_message(chat_id=update.message.chat_id, text="瞎说")
 
 
 def caps(bot, update, args):
@@ -124,6 +133,9 @@ dispatcher.add_handler(start_handler)
 
 som_handler = CommandHandler('抽烟', som)
 dispatcher.add_handler(som_handler)
+
+som_time_handler = CommandHandler('抽烟时间', som_time)
+dispatcher.add_handler(som_time_handler)
 
 dispatcher.add_handler(CommandHandler('remove', remove))
 
