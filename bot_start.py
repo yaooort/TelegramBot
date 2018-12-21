@@ -1,3 +1,4 @@
+import requests
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 import logging
@@ -118,7 +119,23 @@ def unknown(bot, update):
     :param update:
     :return:
     """
-    bot.send_message(chat_id=update.message.chat_id, text="我不明白这个命令")
+    msg = update.message.text
+    if '对不' in msg:
+        call_message = '你说的对!'
+    elif '走不' in msg:
+        call_message = '说走就走'
+    elif '是不' in msg:
+        call_message = '是的'
+    elif '好不' in msg:
+        call_message = '好'
+    elif '慌不' in msg or '芳不' in msg:
+        call_message = '有点小芳'
+    elif '去不' in msg:
+        call_message = '21点走起!再不去就没饭吃了'
+    else:
+        call_message = ask_bot(msg)
+
+    bot.send_message(chat_id=update.message.chat_id, text=call_message)
 
 
 updater = Updater('737719054:AAH2SwsM8zFbU_MhSP-9LYydxB68AhHg0T4')
@@ -178,8 +195,37 @@ def job_func(chat_id):
     :return:
     """
     updater.bot.sendMessage(chat_id=chat_id,
-                            text='各位客官老爷们,抽烟时间到了!')
+                            text='各位赌徒,下去散散心!')
 
 
 # 启动定时器
 scheduler.start()
+
+
+# noinspection PyBroadException
+def ask_bot(question):
+    if len(question) > 127:
+        return
+    data_map = {
+        "reqType": 0,
+        "perception": {
+            "inputText": {
+                "text": question
+            }
+        },
+        "userInfo": {
+            "apiKey": "7695c949f5504b90a26e7906ce118f27",
+            "userId": "369451"
+        }
+    }
+    try:
+        response = requests.post('http://openapi.tuling123.com/openapi/api/v2', json=data_map).json()
+        code = response['intent']['code']
+        if code == 10004:
+            re_str = response['results'][0]['values']['text']
+            print(re_str)
+            return re_str
+        else:
+            return '狗日的，脑子坏了！'
+    except Exception as w:
+        return '狗日的，脑子坏了！'
