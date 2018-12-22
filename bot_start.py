@@ -76,7 +76,23 @@ def echo(bot, update):
     :param update:
     :return:
     """
-    bot.send_message(chat_id=update.message.chat_id, text="瞎说")
+    msg = update.message.text
+    if '对不' in msg:
+        call_message = '你说的对!'
+    elif '走不' in msg:
+        call_message = '说走就走'
+    elif '是不' in msg:
+        call_message = '是的'
+    elif '好不' in msg:
+        call_message = '好'
+    elif '慌不' in msg or '芳不' in msg:
+        call_message = '有点小芳'
+    elif '去不' in msg:
+        call_message = '21点走起!再不去就没饭吃了'
+    else:
+        call_message = ask_bot(msg)
+
+    bot.send_message(chat_id=update.message.chat_id, text=call_message)
 
 
 def caps(bot, update, args):
@@ -119,23 +135,7 @@ def unknown(bot, update):
     :param update:
     :return:
     """
-    msg = update.message.text
-    if '对不' in msg:
-        call_message = '你说的对!'
-    elif '走不' in msg:
-        call_message = '说走就走'
-    elif '是不' in msg:
-        call_message = '是的'
-    elif '好不' in msg:
-        call_message = '好'
-    elif '慌不' in msg or '芳不' in msg:
-        call_message = '有点小芳'
-    elif '去不' in msg:
-        call_message = '21点走起!再不去就没饭吃了'
-    else:
-        call_message = ask_bot(msg)
-
-    bot.send_message(chat_id=update.message.chat_id, text=call_message)
+    bot.send_message(chat_id=update.message.chat_id, text="瞎说")
 
 
 updater = Updater('737719054:AAH2SwsM8zFbU_MhSP-9LYydxB68AhHg0T4')
