@@ -165,10 +165,10 @@ def unknown(bot, update):
     :param update:
     :return:
     """
-    if is_open_bot_simple:
-        bot.send_message(chat_id=update.message.chat_id, text='这个指令我不明白')
-    else:
-        bot.send_message(chat_id=update.message.chat_id, text=ask_bot(update.message.text))
+    # if is_open_bot_simple:
+    bot.send_message(chat_id=update.message.chat_id, text='这个指令我不明白')
+    # else:
+        # bot.send_message(chat_id=update.message.chat_id, text=ask_bot(update.message.text))
 
 
 updater = Updater('737719054:AAH2SwsM8zFbU_MhSP-9LYydxB68AhHg0T4')
@@ -252,7 +252,7 @@ def ask_bot(question):
         },
         "userInfo": {
             "apiKey": "7695c949f5504b90a26e7906ce118f27",
-            "userId": str(random.randint(100000, 10000000))
+            "userId": str(random.randint(10000, 100000))
         }
     }
     try:
