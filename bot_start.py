@@ -3,6 +3,10 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Inlin
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 import logging
 from apscheduler.schedulers.background import BackgroundScheduler
+import random
+
+# 是否开启图灵机器人聊天
+is_open_bot_simple = False
 
 
 def hello(bot, update):
@@ -12,7 +16,7 @@ def hello(bot, update):
     :param update:
     :return:
     """
-    bot.send_message(chat_id=update.message.chat_id, text="我是抽烟群的小秘书，有事请找我说。。。您可以输入 /抽烟 ")
+    bot.send_message(chat_id=update.message.chat_id, text="我是抽烟群的小秘书，有事请找我说。。。您可以输入 /抽烟 /开启机器人  /关闭机器人 指令")
 
 
 def som(bot, update):
@@ -34,6 +38,30 @@ def remove(bot, update):
     """
     remove_job()
     bot.send_message(chat_id=update.message.chat_id, text="客官，所有定时任务均已经删除。")
+
+
+def open_bot(bot, update):
+    """
+    /开启机器人 命令
+    :param bot:
+    :param update:
+    :return:
+    """
+    global is_open_bot_simple
+    is_open_bot_simple = True
+    bot.send_message(chat_id=update.message.chat_id, text="各位，我会回复各位的任何问题！有问题都可以问我，讲笑话，唐诗宋词无所不能，哈哈哈!")
+
+
+def close_bot(bot, update):
+    """
+    /关闭机器人 命令
+    :param bot:
+    :param update:
+    :return:
+    """
+    global is_open_bot_simple
+    is_open_bot_simple = False
+    bot.send_message(chat_id=update.message.chat_id, text="各位，我走了!")
 
 
 def som_time(bot, update):
@@ -90,8 +118,10 @@ def echo(bot, update):
     elif '去不' in msg:
         call_message = '21点走起!再不去就没饭吃了'
     else:
-        call_message = ask_bot(msg)
-
+        if is_open_bot_simple:
+            call_message = ask_bot(msg)
+        else:
+            return
     bot.send_message(chat_id=update.message.chat_id, text=call_message)
 
 
@@ -135,7 +165,10 @@ def unknown(bot, update):
     :param update:
     :return:
     """
-    bot.send_message(chat_id=update.message.chat_id, text="瞎说")
+    if is_open_bot_simple:
+        bot.send_message(chat_id=update.message.chat_id, text='这个指令我不明白')
+    else:
+        bot.send_message(chat_id=update.message.chat_id, text=ask_bot(update.message.text))
 
 
 updater = Updater('737719054:AAH2SwsM8zFbU_MhSP-9LYydxB68AhHg0T4')
@@ -155,6 +188,10 @@ som_time_handler = CommandHandler('抽烟时间', som_time)
 dispatcher.add_handler(som_time_handler)
 
 dispatcher.add_handler(CommandHandler('remove', remove))
+
+dispatcher.add_handler(CommandHandler('开启机器人', open_bot))
+
+dispatcher.add_handler(CommandHandler('关闭机器人', close_bot))
 
 echo_handler = MessageHandler(Filters.text, echo)
 dispatcher.add_handler(echo_handler)
@@ -215,7 +252,7 @@ def ask_bot(question):
         },
         "userInfo": {
             "apiKey": "7695c949f5504b90a26e7906ce118f27",
-            "userId": "369451"
+            "userId": str(random.randint(100000, 10000000))
         }
     }
     try:
@@ -223,7 +260,7 @@ def ask_bot(question):
         code = response['intent']['code']
         if code == 10004:
             re_str = response['results'][0]['values']['text']
-            print(re_str)
+            # print(re_str)
             return re_str
         else:
             return '狗日的，脑子坏了！'
