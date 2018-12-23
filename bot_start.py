@@ -104,7 +104,9 @@ def echo(bot, update):
     :param update:
     :return:
     """
+
     msg = update.message.text
+    print(msg)
     if '对不' in msg:
         call_message = '你说的对!'
     elif '走不' in msg:
@@ -256,11 +258,13 @@ def ask_bot(question):
         }
     }
     try:
+        print('开始请求')
         response = requests.post('http://openapi.tuling123.com/openapi/api/v2', json=data_map).json()
+        print(response)
         code = response['intent']['code']
         if code == 10004:
             re_str = response['results'][0]['values']['text']
-            # print(re_str)
+            print(re_str)
             return re_str
         else:
             return '狗日的，脑子坏了！'
