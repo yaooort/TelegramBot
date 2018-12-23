@@ -3,11 +3,14 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Inlin
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 from apscheduler.schedulers.background import BackgroundScheduler
 import random
-import logging
+
+# import logging
 
 # 是否开启图灵机器人聊天
 is_open_bot_simple = False
-logging.basicConfig(format='%(asctime)s-%(levelname)s %(message)s', level=logging.DEBUG)
+
+
+# logging.basicConfig(format='%(asctime)s-%(levelname)s %(message)s', level=logging.ERROR)
 
 
 def hello(bot, update):
@@ -107,7 +110,7 @@ def echo(bot, update):
     """
 
     msg = update.message.text
-    logging.info(msg)
+    # logging.info(msg)
     print(msg)
     if '对不' in msg:
         call_message = '你说的对!'
@@ -178,9 +181,9 @@ def unknown(bot, update):
 updater = Updater('737719054:AAH2SwsM8zFbU_MhSP-9LYydxB68AhHg0T4')
 
 dispatcher = updater.dispatcher
-
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
+#
+# logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+#                     level=logging.INFO)
 
 start_handler = CommandHandler('hello', hello)
 dispatcher.add_handler(start_handler)
@@ -261,18 +264,17 @@ def ask_bot(question):
     }
     try:
         # 测试请求
-        logging.info('开始请求')
-        print('开始请求')
+        # logging.info('开始请求')
+        # print('开始请求')
         response = requests.post('http://openapi.tuling123.com/openapi/api/v2', json=data_map).json()
-        print(response)
-        logging.info('请求成功'+response)
+        # print(response)
+        # logging.info('请求成功'+response)
         code = response['intent']['code']
         if code == 10004:
             re_str = response['results'][0]['values']['text']
-            print(re_str)
             return re_str
         else:
             return '狗日的，脑子坏了！'
     except Exception as e:
-        logging.error(repr(e))
+        # logging.error(repr(e))
         return '狗日的，脑子坏了！'
