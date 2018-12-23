@@ -1,12 +1,13 @@
 import requests
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler
 from telegram import InlineQueryResultArticle, InputTextMessageContent
-import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 import random
+import logging
 
 # 是否开启图灵机器人聊天
 is_open_bot_simple = False
+logging.basicConfig(format='%(asctime)s-%(levelname)s %(message)s', level=logging.DEBUG)
 
 
 def hello(bot, update):
@@ -106,6 +107,7 @@ def echo(bot, update):
     """
 
     msg = update.message.text
+    logging.info(msg)
     print(msg)
     if '对不' in msg:
         call_message = '你说的对!'
@@ -259,10 +261,11 @@ def ask_bot(question):
     }
     try:
         # 测试请求
-        print(requests.get('https://api.github.com/events').text)
+        logging.info('开始请求')
         print('开始请求')
         response = requests.post('http://openapi.tuling123.com/openapi/api/v2', json=data_map).json()
         print(response)
+        logging.info('请求成功'+response)
         code = response['intent']['code']
         if code == 10004:
             re_str = response['results'][0]['values']['text']
@@ -270,5 +273,6 @@ def ask_bot(question):
             return re_str
         else:
             return '狗日的，脑子坏了！'
-    except Exception as w:
+    except Exception as e:
+        logging.error(repr(e))
         return '狗日的，脑子坏了！'
