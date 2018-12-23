@@ -170,7 +170,7 @@ def unknown(bot, update):
     # if is_open_bot_simple:
     bot.send_message(chat_id=update.message.chat_id, text='这个指令我不明白')
     # else:
-        # bot.send_message(chat_id=update.message.chat_id, text=ask_bot(update.message.text))
+    # bot.send_message(chat_id=update.message.chat_id, text=ask_bot(update.message.text))
 
 
 updater = Updater('737719054:AAH2SwsM8zFbU_MhSP-9LYydxB68AhHg0T4')
@@ -258,6 +258,8 @@ def ask_bot(question):
         }
     }
     try:
+        # 测试请求
+        print(requests.get('https://api.github.com/events').text)
         print('开始请求')
         response = requests.post('http://openapi.tuling123.com/openapi/api/v2', json=data_map).json()
         print(response)
