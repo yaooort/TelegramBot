@@ -269,12 +269,12 @@ def ask_bot(question):
         response = requests.post('http://openapi.tuling123.com/openapi/api/v2', json=data_map).json()
         # print(response)
         # logging.info('请求成功'+response)
-        code = response['intent']['code']
-        if code == 10004:
-            re_str = response['results'][0]['values']['text']
-            return re_str
-        else:
-            return '狗日的，脑子坏了！'
+        # code = response['intent']['code']
+        # if code == 10004:
+        re_str = response['results'][0]['values']['text']
+        return re_str
+        # else:
+        #     return '狗日的，脑子坏了！'
     except Exception as e:
         # logging.error(repr(e))
         return '狗日的，脑子坏了！'
