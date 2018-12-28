@@ -111,6 +111,7 @@ def echo(bot, update):
 
     msg = update.message.text
     # logging.info(msg)
+    results = []
     print(msg)
     if '对不' in msg:
         call_message = '你说的对!'
@@ -126,10 +127,15 @@ def echo(bot, update):
         call_message = '21点走起!再不去就没饭吃了'
     else:
         if is_open_bot_simple:
-            call_message = ask_bot(msg)
+            call_message, results = ask_bot(msg)
         else:
             return
     bot.send_message(chat_id=update.message.chat_id, text=call_message)
+    if len(results) > 1:
+        for item in results[1]['values']['news']:
+            # bot.send_message(chat_id=update.message.chat_id, text=item['icon'])
+            text = item['name'] +'    =======点击查看详情==================   '+ item['detailurl']
+            bot.send_message(chat_id=update.message.chat_id, text=text)
 
 
 def caps(bot, update, args):
@@ -271,8 +277,10 @@ def ask_bot(question):
         # logging.info('请求成功'+response)
         # code = response['intent']['code']
         # if code == 10004:
+
         re_str = response['results'][0]['values']['text']
-        return re_str
+        results = response['results']
+        return re_str, results
         # else:
         #     return '狗日的，脑子坏了！'
     except Exception as e:
